@@ -36,8 +36,8 @@ public class NasaApiService {
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build().create(NasaApiServiceInterface.class);
     }
-    public Call<Page> search(String date, String apikey, int page){
-        return service.search(date, apikey, page);
+    public Call<Page> search(String rover,String date, String apikey, int page){
+        return service.search(rover, date, apikey, page);
     }
 
 }

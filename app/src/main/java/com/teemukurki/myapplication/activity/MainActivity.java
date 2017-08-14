@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.teemukurki.myapplication.BuildConfig;
 import com.teemukurki.myapplication.ImageApp;
 import com.teemukurki.myapplication.R;
 import com.teemukurki.myapplication.model.Photos;
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageApp.getInstance().getApiService().search("2016-8-13","NNKOjkoul8n1CH18TWA9gwngW1s1SmjESPjNoUFo", 0).enqueue(new Callback<Page>() {
+        ImageApp.getInstance().getApiService().search("opportunity","2016-8-13", BuildConfig.API_KEY, 0).enqueue(new Callback<Page>() {
             @Override
             public void onResponse(Call<Page> call, Response<Page> response) {
                List<Photos> results = response.body().getPhotos();
