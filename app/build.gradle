@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
@@ -56,10 +57,11 @@ dependencies {
     compile "com.android.support:design:$supportVersion"
     compile "com.android.support:appcompat-v7:$supportVersion"
     compile "com.android.support:support-v4:$supportVersion"
-
     compile "com.android.support:recyclerview-v7:$supportVersion"
     compile "com.android.support:cardview-v7:$supportVersion"
 
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    compile 'io.reactivex:rxjava:1.3.0'
 }

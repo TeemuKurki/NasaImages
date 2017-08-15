@@ -2,22 +2,26 @@ package com.teemukurki.myapplication.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created by teemu on 14.8.2017.
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Photos {
-    private int id;
+public class Photos extends RealmObject {
+    @PrimaryKey
+    private String id;
+
     private String img_src;
     private int sol;
-    private Camera camera;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -37,11 +41,4 @@ public class Photos {
         this.sol = sol;
     }
 
-    public Camera getCamera() {
-        return camera;
-    }
-
-    public void setCamera(Camera camera) {
-        this.camera = camera;
-    }
 }
