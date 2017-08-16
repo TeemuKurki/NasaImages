@@ -10,10 +10,19 @@
         android:id="@+id/clear_db"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tghjennä Realm"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Tyhjennä realm"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.teemukurki.myapplication.view.MyRecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clear_db">
+
+    </com.teemukurki.myapplication.view.MyRecyclerView>
 
 </android.support.constraint.ConstraintLayout>

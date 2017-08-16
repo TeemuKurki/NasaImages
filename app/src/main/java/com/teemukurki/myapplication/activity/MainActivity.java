@@ -1,17 +1,22 @@
 package com.teemukurki.myapplication.activity;
 
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.teemukurki.myapplication.BuildConfig;
 import com.teemukurki.myapplication.ImageApp;
+import com.teemukurki.myapplication.ItemsAdapter;
 import com.teemukurki.myapplication.R;
 import com.teemukurki.myapplication.model.Items;
 import com.teemukurki.myapplication.model.Photos;
 import com.teemukurki.myapplication.model.Page;
+import com.teemukurki.myapplication.view.MyRecyclerView;
 
 import java.util.Date;
 import java.util.List;
@@ -22,18 +27,23 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MyRecyclerView.LoadMoreListener {
 
     private static String TAG = "MainActivity";
-    int currentPage = 0;
 
     private Realm realm;
     private Items items;
+    private Page page;
 
     private String earth_date = "2017-2-22";
     private String rover = "curiosity";
 
     private Button tyhjenna;
+
+    private MyRecyclerView recycler;
+    private ItemsAdapter adapter;
+
+    private boolean isLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +51,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         tyhjenna = (Button) findViewById(R.id.clear_db);
+
+        adapter = new ItemsAdapter();
+
+        recycler = (MyRecyclerView) findViewById(R.id.recycler);
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
+        recycler.setLayoutManager(manager);
+        recycler.setAdapter(adapter);
+        recycler.setLoadMoreListener(this);
+
         tyhjenna.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(items != null && realm != null){
                     realm.beginTransaction();
-                    items.setItems(new RealmList<Photos>());
-                    items.setLastUpdate(0);
+                    items.reset();
+                    Log.d(TAG, String.valueOf(items.getCurrentPage()));
                     realm.commitTransaction();
                 }
+                getPage();
             }
         });
 
@@ -64,13 +84,14 @@ public class MainActivity extends AppCompatActivity {
         if(items == null){
             items = new Items();
             items.setId(earth_date);
-
             realm.beginTransaction();
             items = realm.copyToRealm(items);
             realm.commitTransaction();
         }
 
-        if(items.getItems().size() == 0){
+
+
+        if(items.getCurrentPage() <= 0){
             getPage();
         } else {
             Log.d(TAG, "Results from database");
@@ -78,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, result.getId() + "| Url: "+ result.getImg_src());
             }
         }
+
+        adapter.initialize(items);
     }
 
     @Override
@@ -91,16 +114,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getPage(){
-        ImageApp.getInstance().getApiService().search(rover,earth_date, BuildConfig.API_KEY, currentPage).enqueue(new Callback<Page>() {
+        Log.d(TAG, String.valueOf(items.getCurrentPage()));
+
+        isLoading = true;
+        adapter.setIsLoading(true);
+        ImageApp.getInstance().getApiService().search(rover,earth_date, BuildConfig.API_KEY, items.getCurrentPage()).enqueue(new Callback<Page>() {
             @Override
             public void onResponse(Call<Page> call, Response<Page> response) {
+                adapter.setIsLoading(false);
+                isLoading = false;
+
                 List<Photos> results = response.body().getPhotos();
                 Log.d(TAG, "Results from web");
                 for(Photos result : results){
-                    Log.d("MainActivity", "Id: "+result.getId() + " | Url: "+result.getImg_src() +" | Sol: "+result.getSol());
+                    Log.d(TAG, "Id: "+result.getId() + " | Url: "+result.getImg_src() +" | Sol: "+result.getSol() + "| Camera: "+result.getCamera().getFull_name());
                 }
 
                 realm.beginTransaction();
+                items.setCurrentPage(items.getCurrentPage() + 1);
                 items.getItems().addAll(results);
                 long lastUpdate = new Date().getTime();
                 items.setLastUpdate(lastUpdate);
@@ -109,8 +140,19 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Page> call, Throwable t) {
-                Log.d("MainActivity", "onFailure: " + t.getMessage());
+                Log.d(TAG, "onFailure: " + t.getMessage());
+                adapter.setIsLoading(false);
+                isLoading = false;
             }
         });
+    }
+
+
+    @Override
+    public void shouldLoadMore() {
+        if(!isLoading){
+            Log.d(TAG, "shouldLoadMore: Starting to load more");
+            getPage();
+        }
     }
 }

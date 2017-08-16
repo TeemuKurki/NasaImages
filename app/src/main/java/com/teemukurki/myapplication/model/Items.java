@@ -17,6 +17,13 @@ public class Items extends RealmObject {
 
     private RealmList<Photos> items = new RealmList<Photos>();
     private long lastUpdate;
+    private int currentPage = 1;
+
+    public void reset(){
+        currentPage = 1;
+        items.clear();
+        lastUpdate = 0;
+    }
 
     public String getId() {
         return id;
@@ -40,5 +47,13 @@ public class Items extends RealmObject {
 
     public void setLastUpdate(long lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
     }
 }
