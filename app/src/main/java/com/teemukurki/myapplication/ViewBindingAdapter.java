@@ -1,6 +1,7 @@
 package com.teemukurki.myapplication;
 
 import android.databinding.BindingAdapter;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
