@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.teemukurki.myapplication.R;
+import com.teemukurki.myapplication.databinding.ListPhotoBinding;
 
 
 /**
@@ -15,16 +16,14 @@ import com.teemukurki.myapplication.R;
 
 public class PhotosViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView titleView;
-    public TextView urlView;
-    public ImageView img;
 
-    public PhotosViewHolder(View itemView) {
-        super(itemView);
+    public ListPhotoBinding binding;
+
+    public PhotosViewHolder(ListPhotoBinding binding) {
+        super(binding.getRoot());
+        this.binding = binding;
 
 
-        titleView = (TextView) itemView.findViewById(R.id.title);
-        urlView = (TextView) itemView.findViewById(R.id.url);
     }
 
 

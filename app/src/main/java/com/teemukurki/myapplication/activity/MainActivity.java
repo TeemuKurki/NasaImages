@@ -1,6 +1,10 @@
 package com.teemukurki.myapplication.activity;
 
 
+import android.app.Application;
+import android.app.DatePickerDialog;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,6 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.teemukurki.myapplication.BuildConfig;
 import com.teemukurki.myapplication.ImageApp;
@@ -18,11 +25,11 @@ import com.teemukurki.myapplication.model.Photos;
 import com.teemukurki.myapplication.model.Page;
 import com.teemukurki.myapplication.view.MyRecyclerView;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,15 +49,41 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerView.Lo
 
     private MyRecyclerView recycler;
     private ItemsAdapter adapter;
+    private EditText eDate;
+    private Calendar myCalendar;
 
     private boolean isLoading;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        myCalendar = Calendar.getInstance();
+
         tyhjenna = (Button) findViewById(R.id.clear_db);
+        eDate = (EditText) findViewById(R.id.date);
+
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener(){
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, month);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            }
+        };
+
+        eDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                new DatePickerDialog(MainActivity.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
 
         adapter = new ItemsAdapter();
 
@@ -63,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerView.Lo
         tyhjenna.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //earth_date = date.getText().toString();
                 if(items != null && realm != null){
                     realm.beginTransaction();
                     items.reset();
@@ -155,4 +189,5 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerView.Lo
             getPage();
         }
     }
+
 }

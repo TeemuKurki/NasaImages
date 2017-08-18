@@ -10,7 +10,8 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true // 65k metodin raja tulee nopeasti täyteen kirjastojen kanssa. Multidex päälle
+        multiDexEnabled true
+        // 65k metodin raja tulee nopeasti täyteen kirjastojen kanssa. Multidex päälle
         /* Multidexin jälkeen Class not found exceptioneihin:
         * (./gradlew cleanBuildCache)
         * ./gradlew clean
@@ -19,7 +20,6 @@ android {
         * */
     }
 
-    // Otetaan databinding käyttöön
     dataBinding {
         enabled = true
     }
@@ -45,14 +45,10 @@ ext {
     supportVersion = '25.3.1'
 }
 
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile 'com.squareup.okhttp3:okhttp:3.8.1'
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-jackson:2.3.0'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.9.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
 
     compile "com.android.support:design:$supportVersion"
     compile "com.android.support:appcompat-v7:$supportVersion"
@@ -60,10 +56,16 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$supportVersion"
     compile "com.android.support:cardview-v7:$supportVersion"
 
+
+
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-jackson:2.3.0'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-
     compile 'io.reactivex:rxjava:1.3.0'
-
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.android.support:support-v4:25.3.1'
 }

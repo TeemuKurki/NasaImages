@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
+import com.teemukurki.myapplication.databinding.ListPhotoBinding;
 import com.teemukurki.myapplication.model.Items;
 import com.teemukurki.myapplication.model.Photos;
 import com.teemukurki.myapplication.viewholder.LoadingViewHolder;
@@ -44,7 +45,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         if(viewType == KEY_POSITION_ITEM){
             View view = layoutInflater.inflate(R.layout.list_photo,parent,false);
-            return new PhotosViewHolder(view);
+            ListPhotoBinding binding = ListPhotoBinding.inflate(layoutInflater,parent,false);
+            return new PhotosViewHolder(binding);
         }else if(viewType == KEY_POSITION_LOADING){
             View view = layoutInflater.inflate(R.layout.list_loading,parent,false);
             return new LoadingViewHolder(view);
@@ -63,8 +65,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             //Tämä asettaa itemin listalle
 
-            ((PhotosViewHolder) holder).titleView.setText(photo.getCamera().getFull_name() +" | Sol: "+ photo.getSol() + " | " + photo.getRover().getName());
-            ((PhotosViewHolder) holder).urlView.setText(photo.getImg_src());
+            ((PhotosViewHolder) holder).binding.setPhotoItem(photo);
         }
     }
 
