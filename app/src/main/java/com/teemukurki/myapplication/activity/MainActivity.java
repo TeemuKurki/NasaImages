@@ -5,6 +5,7 @@ import android.app.Application;
 import android.app.DatePickerDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,11 +46,10 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerView.Lo
     private String earth_date = "2017-2-22";
     private String rover = "curiosity";
 
-    private Button tyhjenna;
-
     private MyRecyclerView recycler;
     private ItemsAdapter adapter;
     private EditText eDate;
+    private SwipeRefreshLayout swipe;
     private Calendar myCalendar;
 
     private boolean isLoading;
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerView.Lo
 
         myCalendar = Calendar.getInstance();
 
-        tyhjenna = (Button) findViewById(R.id.clear_db);
+        swipe = (SwipeRefreshLayout) findViewById(R.id.swipe);
         eDate = (EditText) findViewById(R.id.date);
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener(){
@@ -93,9 +93,10 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerView.Lo
         recycler.setAdapter(adapter);
         recycler.setLoadMoreListener(this);
 
-        tyhjenna.setOnClickListener(new View.OnClickListener() {
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View v) {
+            public void onRefresh() {
+                Log.d(TAG,"swiper");
                 //earth_date = date.getText().toString();
                 if(items != null && realm != null){
                     realm.beginTransaction();
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerView.Lo
                     realm.commitTransaction();
                 }
                 getPage();
+                swipe.setRefreshing(false);
             }
         });
 
@@ -117,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerView.Lo
         items = realm.where(Items.class).equalTo("id",earth_date).findFirst();
         if(items == null){
             items = new Items();
+            items.reset();
             items.setId(earth_date);
             realm.beginTransaction();
             items = realm.copyToRealm(items);
@@ -125,9 +128,10 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerView.Lo
 
 
 
-        if(items.getCurrentPage() <= 0){
+        if(items.getCurrentPage() <= 1){
             getPage();
         } else {
+            Log.d(TAG,String.valueOf(items.getCurrentPage()));
             Log.d(TAG, "Results from database");
             for (Photos result : items.getItems()) {
                 Log.d(TAG, result.getId() + "| Url: "+ result.getImg_src());

@@ -8,37 +8,45 @@
             type="com.teemukurki.myapplication.model.Photos"/>
         <import type="android.view.View" />
     </data>
-    
-    <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
-
-        <TextView
-            android:paddingTop="5dp"
-            android:layout_width="wrap_content"
+        app:cardCornerRadius="4dp"
+        app:contentPadding="5dp"
+        >
+    
+        <LinearLayout
+            android:orientation="vertical" android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{photoItem.camera.full_name}"/>
+            android:gravity="center_horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="2dp"
-            android:paddingBottom="5dp"
-            android:text="@{photoItem.sol}"/>
+            <TextView
+                android:paddingTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{photoItem.camera.full_name}"/>
 
-        <ImageView
-            app:url="@{photoItem.img_src}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="2dp"
-            android:paddingBottom="5dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="2dp"
+                android:paddingBottom="5dp"
+                android:text="@{photoItem.sol}"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/black" />
+            <ImageView
+                app:url="@{photoItem.img_src}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="2dp"
+                android:paddingBottom="5dp" />
 
-    </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/black" />
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
 </layout>

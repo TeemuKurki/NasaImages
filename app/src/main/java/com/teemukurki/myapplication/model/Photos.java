@@ -18,6 +18,7 @@ public class Photos extends RealmObject {
     private String sol;
     private Camera camera;
     private Rover rover;
+    private String currentPage;
 
     public String getId() {
         return id;
@@ -58,5 +59,5 @@ public class Photos extends RealmObject {
     public void setRover(Rover rover) {
         this.rover = rover;
     }
-
+    
 }
