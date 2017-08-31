@@ -25,11 +25,13 @@ import com.teemukurki.myapplication.model.Page;
 import com.teemukurki.myapplication.model.Photos;
 import com.teemukurki.myapplication.view.MyRecyclerView;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
 import retrofit2.Call;
@@ -43,6 +45,7 @@ import retrofit2.Response;
 public class ListFragment extends Fragment implements MyRecyclerView.LoadMoreListener {
 
     private static String TAG = "ListFragment";
+    private String landing_date = "2012-08-06";
 
     private Realm realm;
     private Items items;
@@ -55,7 +58,6 @@ public class ListFragment extends Fragment implements MyRecyclerView.LoadMoreLis
     private TextView eDate;
     private SwipeRefreshLayout swipe;
     private Calendar myCalendar;
-
 
     private boolean isLoading;
 
@@ -108,9 +110,22 @@ public class ListFragment extends Fragment implements MyRecyclerView.LoadMoreLis
         eDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 new DatePickerDialog(ListFragment.this.getContext(), date, myCalendar
+                  DatePickerDialog dpd = new DatePickerDialog(ListFragment.this.getContext(), date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date minDate = new Date();
+                Date maxDate = new Date();
+                try{
+                    minDate = simpleDateFormat.parse(landing_date);
+                    maxDate = new Date();
+                }catch (ParseException e){
+                    e.printStackTrace();
+                }
+
+                dpd.getDatePicker().setMinDate(minDate.getTime());
+                dpd.getDatePicker().setMaxDate(maxDate.getTime());
+                dpd.show();
 
             }
         });
@@ -126,7 +141,6 @@ public class ListFragment extends Fragment implements MyRecyclerView.LoadMoreLis
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {;
-                //earth_date = date.getText().toString();
                 if(items != null && realm != null){
                     realm.beginTransaction();
                     items.reset();
@@ -139,6 +153,7 @@ public class ListFragment extends Fragment implements MyRecyclerView.LoadMoreLis
 
         eDate.setText(getDateFromCalendar(myCalendar));
         earth_date = getDateFromCalendar(myCalendar);
+
         return root;
     }
 
@@ -157,7 +172,7 @@ public class ListFragment extends Fragment implements MyRecyclerView.LoadMoreLis
             realm.commitTransaction();
         }
 
-
+        eDate.setText(getDateFromCalendar(myCalendar));
 
         if(items.getCurrentPage() <= 1){
             getPage();
@@ -183,8 +198,6 @@ public class ListFragment extends Fragment implements MyRecyclerView.LoadMoreLis
     }
 
     private void getPage(){
-        Log.d(TAG, String.valueOf(items.getCurrentPage()));
-
         isLoading = true;
         adapter.setIsLoading(true);
         ImageApp.getInstance().getApiService().search(rover,earth_date, BuildConfig.API_KEY, items.getCurrentPage()).enqueue(new Callback<Page>() {
@@ -194,16 +207,16 @@ public class ListFragment extends Fragment implements MyRecyclerView.LoadMoreLis
                 isLoading = false;
 
                 List<Photos> results = response.body().getPhotos();
-                Log.d(TAG, "Results from web");
-                for(Photos result : results){
-                    Log.d(TAG, "Id: "+result.getId() + " | Url: "+result.getImg_src() +" | Sol: "+result.getSol() + "| Camera: "+result.getCamera().getFull_name() + " | "+result.getRover().getName());
-                }
-                realm.beginTransaction();
-                items.setCurrentPage(items.getCurrentPage() + 1);
-                items.getItems().addAll(results);
-                long lastUpdate = new Date().getTime();
-                items.setLastUpdate(lastUpdate);
-                realm.commitTransaction();
+                    Log.d(TAG, "Results from web");
+                    for(Photos result : results){
+                        Log.d(TAG, "Id: "+result.getId() + " | Url: "+result.getImg_src() +" | Sol: "+result.getSol() + "| Camera: "+result.getCamera().getFull_name() + " | "+result.getRover().getName());
+                    }
+                    realm.beginTransaction();
+                    items.setCurrentPage(items.getCurrentPage() + 1);
+                    items.getItems().addAll(results);
+                    long lastUpdate = new Date().getTime();
+                    items.setLastUpdate(lastUpdate);
+                    realm.commitTransaction();
 
             }
 
@@ -213,6 +226,8 @@ public class ListFragment extends Fragment implements MyRecyclerView.LoadMoreLis
                 adapter.setIsLoading(false);
                 isLoading = false;
             }
+
+
         });
     }
 

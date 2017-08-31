@@ -12,8 +12,11 @@ import com.squareup.picasso.Picasso;
 
 public class ViewBindingAdapter {
 
+    private static String TAG = "ViewBindingAdapter";
+
     @BindingAdapter("url")
     public static void lataaKuva(ImageView imageView, String url){
+        Log.d(TAG, url);
         Picasso.with(imageView.getContext())
                 .load(url)
                 .noFade()

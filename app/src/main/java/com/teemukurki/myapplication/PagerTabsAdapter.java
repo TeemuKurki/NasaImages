@@ -21,11 +21,9 @@ public class PagerTabsAdapter extends FragmentStatePagerAdapter {
         /*if(position == 0){
             //Ensimmäinen tabi
             return com.teemukurki.myapplication.fragments.ListFragment.newInstance("curiosity");
-
         }else if(position == 1){
             //Toinen tabi
             return com.teemukurki.myapplication.fragments.ListFragment.newInstance("opportunity");
-
         }else {
             //Kolmas tabi
             return com.teemukurki.myapplication.fragments.ListFragment.newInstance("spirit");
